@@ -19,7 +19,15 @@ export class OrdersController {
 
   @Get()
   async findAll(@Query() orderPaginationDto: OrderPaginationDto) {
-    return this.client.send('findAllOrders', orderPaginationDto);
+    try {
+      const orders = await firstValueFrom(
+        this.client.send('findAllOrders', orderPaginationDto)
+      );
+
+      return orders;
+    } catch (err) {
+      throw new RpcException(err);
+    }
   }
 
   @Get('id/:id')
@@ -30,7 +38,6 @@ export class OrdersController {
       );  
       
       return order;
-
     } catch (err) {
       throw new RpcException(err);
     }
@@ -41,14 +48,10 @@ export class OrdersController {
     @Param() statusDto: StatusDto,
     @Query() paginationDto: PaginationDto
   ) {
-    try {
-      return this.client.send('findAllOrders', {
-        ...paginationDto,
-        status: statusDto.status
-      });
-    } catch (err) {
-      throw new RpcException(err);
-    }
+    return this.client.send('findAllOrders', {
+      ...paginationDto,
+      status: statusDto.status
+    });
   }
 
   @Patch(':id')
@@ -56,10 +59,6 @@ export class OrdersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() statusDto: StatusDto,
   ) {
-    try {
-      return this.client.send('changeOrderStatus', { id, status: statusDto.status });
-    } catch (err) {
-      throw new RpcException(err);
-    }
+    return this.client.send('changeOrderStatus', { id, status: statusDto.status });
   }
 }
