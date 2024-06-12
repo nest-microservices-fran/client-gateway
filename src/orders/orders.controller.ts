@@ -48,10 +48,14 @@ export class OrdersController {
     @Param() statusDto: StatusDto,
     @Query() paginationDto: PaginationDto
   ) {
-    return this.client.send('findAllOrders', {
-      ...paginationDto,
-      status: statusDto.status
-    });
+    try {
+      return this.client.send('findAllOrders', {
+        ...paginationDto,
+        status: statusDto.status
+      });
+    } catch (err) {
+      throw new RpcException(err)
+    }
   }
 
   @Patch(':id')
@@ -59,6 +63,10 @@ export class OrdersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() statusDto: StatusDto,
   ) {
-    return this.client.send('changeOrderStatus', { id, status: statusDto.status });
+    try {
+      return this.client.send('changeOrderStatus', { id, status: statusDto.status });
+    } catch(err) {
+      throw new RpcException(err)
+    }
   }
 }
