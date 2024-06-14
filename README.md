@@ -113,3 +113,13 @@ EXPOSE 3000
 # Ejecutamos la aplicación con node dist/main.js
 CMD ["node", "dist/main.js"]
 ```
+
+2. Ejecutar el siguiente comando
+
+```
+docker build -f dockerfile.prod -t client-gateway .
+```
+
+**-f** Indica el archivo a buscar.  
+**-t** Se refiere al tag.  
+**.** Busca el archivo en el contexto donde está.
